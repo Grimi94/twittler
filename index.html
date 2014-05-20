@@ -13,16 +13,20 @@
         //$body.html('');
 
         var newIndex = streams.home.length - 1;
-        console.log(indexOfLast+ "  " + newIndex);
-        if ( indexOfLast< newIndex) {
+        //console.log(indexOfLast+ "  " + newIndex);
+        if ( indexOfLast < newIndex) {
           for (var i = indexOfLast; i < newIndex; i++) {
             var tweet = streams.home[i];
             var $tweet = $('<div></div>');
-            $tweet.text('@' + tweet.user + ': ' + tweet.message);
+            //var created_at = tweet.created_at.split(" ");
+            //console.log(created_at);
+            var time = tweet.created_at.getHours()+':'+tweet.created_at.getMinutes()+':'+tweet.created_at.getSeconds()
+            $tweet.text('@' + tweet.user + ': ' + tweet.message + "   " + time);
             $tweet.prependTo($body);
           };
+          indexOfLast = newIndex;
         };
-        indexOfLast = newIndex;
+        
       }
 
       setInterval(showTweets,1000);
