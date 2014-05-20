@@ -10,9 +10,10 @@
     var indexOfLast = 0;
     var showTweets = function(){
         var $body = $('body');
-        $body.html('');
+        //$body.html('');
 
         var newIndex = streams.home.length - 1;
+        console.log(indexOfLast+ "  " + newIndex);
         if ( indexOfLast< newIndex) {
           for (var i = indexOfLast; i < newIndex; i++) {
             var tweet = streams.home[i];
@@ -21,7 +22,10 @@
             $tweet.prependTo($body);
           };
         };
+        indexOfLast = newIndex;
       }
+
+      setInterval(showTweets,1000);
 
       $(document).ready(showTweets);
 
