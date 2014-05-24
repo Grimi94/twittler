@@ -1,38 +1,115 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script src="jquery.js"></script>
-    <script src="data_generator.js"></script>
-  </head>
-  <body>
-    <script>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
+  <script src="jquery.js"></script>
+
+  <style type="text/css">
+    body {
+      padding-top: 20px;
+      padding-bottom: 40px;
+    }
+
+    /* Custom container */
+    .container-narrow {
+      margin: 0 auto;
+      max-width: 700px;
+    }
+    .container-narrow > hr {
+      margin: 30px 0;
+    }
+
+    /* Supporting marketing content */
+    .marketing {
+      margin: 60px 0;
+    }
+    .marketing p + h4 {
+      margin-top: 28px;
+    }
+
+
+    .myalert{
+      margin-top: 5px;
+      margin-bottom: 5px !important;
+    }
+
+  </style>
+
+</head>
+<body>
+  <div class="container-narrow">
+
+    <div class="masthead">
+      <ul class="nav nav-pills pull-right">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">New Tweet</a></li>
+
+      </ul>
+      <h3 class="muted">Twittler</h3>
+    </div>
+    <div class="marketing" id="feed">
+  </div>
+  </div>
+
+  
+
+  <script>
 
     var indexOfLast = 0;
+    
     var showTweets = function(){
-        var $body = $('body');
-        //$body.html('');
+      var $body = $('body');
 
-        var newIndex = streams.home.length - 1;
-        //console.log(indexOfLast+ "  " + newIndex);
-        if ( indexOfLast < newIndex) {
-          for (var i = indexOfLast; i < newIndex; i++) {
-            var tweet = streams.home[i];
-            var $tweet = $('<div></div>');
-            //var created_at = tweet.created_at.split(" ");
-            //console.log(created_at);
-            var time = tweet.created_at.getHours()+':'+tweet.created_at.getMinutes()+':'+tweet.created_at.getSeconds()
-            $tweet.text('@' + tweet.user + ': ' + tweet.message + "   " + time);
-            $tweet.prependTo($body);
+      var returnHumanTime = function(time){
+        return moment.duration(time - Date.now()).humanize();
+      };
+
+      var newIndex = streams.home.length - 1;
+
+      if ( 0 < newIndex) {
+        for (var i = indexOfLast; i < newIndex; i++) {
+          var tweet = streams.home[i];
+          var time = {hours:tweet.created_at.getHours(), minutes:tweet.created_at.getMinutes(), seconds:tweet.created_at.getSeconds()};
+
+          var $tweet = $('<div class="myalert alert alert-info"></div>');
+          var $firstRow = $('<div class="row-fluid"></div>');
+          var $leftSide = $('<div class="span3"></div>');
+          var $rigthSide = $leftSide;
+          var $user = $('<a><strong></strong></a>');
+          $user.text('@'+tweet.user);
+          var $hour = $('<p></p>');
+          var $message = $hour;
+          $hour.text(returnHumanTime(time));
+          console.log($hour.text);
+          $message.text(tweet.message);
+          $user.appendTo($leftSide);
+          $hour.appendTo($rigthSide);
+          $leftSide.appendTo($firstRow);
+          $rigthSide.appendTo($firstRow);
+          $firstRow.appendTo($tweet);
+          $message.appendTo($tweet);
+
+
+            //$tweet.text(tweet.message + "   " + returnHumanTime(time));
+            //console.log(moment.duration(Date.now() - tweet.created_at).asMilliseconds());
+            $tweet.prependTo(".marketing");
           };
           indexOfLast = newIndex;
-        };
+        }
         
       }
 
       setInterval(showTweets,1000);
-
       $(document).ready(showTweets);
+      
 
     </script>
+    
+    <script src="data_generator.js"></script>
+    <script src="moment.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
   </body>
-</html>
+  </html>
