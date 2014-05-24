@@ -6,6 +6,7 @@
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
   <script src="jquery.js"></script>
+  <script src="moment.min.js"></script>
 
   <style type="text/css">
     body {
@@ -51,7 +52,7 @@
       <h3 class="muted">Twittler</h3>
     </div>
     <div class="marketing" id="feed">
-  </div>
+    </div>
   </div>
 
   
@@ -59,57 +60,52 @@
   <script>
 
     var indexOfLast = 0;
-    
+    var referenceTime = new Date();
+
+    var returnHumanTime = function(time){
+      return moment.duration(new Date() - time).humanize();
+    };
+
     var showTweets = function(){
-      var $body = $('body');
+        $('.marketing').html('');
+        for (var i = 0; i < streams.home.length; i++) {
+            var tweet = streams.home[i];
+            var time = {hours:tweet.created_at.getHours(), minutes:tweet.created_at.getMinutes(), seconds:tweet.created_at.getSeconds()};
+            var humanTime = returnHumanTime(tweet.created_at);
+            var $tweet = $('<div class="myalert alert alert-info"></div>');
+            var $firstRow = $('<div class="row-fluid"></div>');
+            var $leftSide = $('<div class="span3"></div>');
+            var $rigthSide = $('<div class="span3"></div>');
+            var $link = $('<a></a>');
+            var $user = $('<strong></strong>');
+            var $hour = $('<p></p>');
+            var $message = $('<p></p>');
 
-      var returnHumanTime = function(time){
-        return moment.duration(time - Date.now()).humanize();
-      };
+            $user.text('@'+tweet.user);
+            $user.appendTo($link);
+            $message.text(tweet.message);
+            $hour.text(humanTime);
+            $link.appendTo($leftSide);
+            $hour.appendTo($rigthSide);
+            $leftSide.appendTo($firstRow);
+            $rigthSide.appendTo($firstRow);
+            $firstRow.appendTo($tweet);
+            $message.appendTo($tweet);
 
-      var newIndex = streams.home.length - 1;
-
-      if ( 0 < newIndex) {
-        for (var i = indexOfLast; i < newIndex; i++) {
-          var tweet = streams.home[i];
-          var time = {hours:tweet.created_at.getHours(), minutes:tweet.created_at.getMinutes(), seconds:tweet.created_at.getSeconds()};
-
-          var $tweet = $('<div class="myalert alert alert-info"></div>');
-          var $firstRow = $('<div class="row-fluid"></div>');
-          var $leftSide = $('<div class="span3"></div>');
-          var $rigthSide = $leftSide;
-          var $user = $('<a><strong></strong></a>');
-          $user.text('@'+tweet.user);
-          var $hour = $('<p></p>');
-          var $message = $hour;
-          $hour.text(returnHumanTime(time));
-          console.log($hour.text);
-          $message.text(tweet.message);
-          $user.appendTo($leftSide);
-          $hour.appendTo($rigthSide);
-          $leftSide.appendTo($firstRow);
-          $rigthSide.appendTo($firstRow);
-          $firstRow.appendTo($tweet);
-          $message.appendTo($tweet);
-
-
-            //$tweet.text(tweet.message + "   " + returnHumanTime(time));
-            //console.log(moment.duration(Date.now() - tweet.created_at).asMilliseconds());
             $tweet.prependTo(".marketing");
-          };
-          indexOfLast = newIndex;
         }
+        //console.log(referenceTime);
         
       }
 
-      setInterval(showTweets,1000);
+      setInterval(showTweets,5000);
       $(document).ready(showTweets);
       
 
     </script>
     
     <script src="data_generator.js"></script>
-    <script src="moment.min.js"></script>
+    
     <script src="js/bootstrap.min.js"></script>
   </body>
   </html>
